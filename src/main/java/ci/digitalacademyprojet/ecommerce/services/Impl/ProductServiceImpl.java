@@ -8,14 +8,18 @@ import ci.digitalacademyprojet.ecommerce.repositories.CategoryRepository;
 import ci.digitalacademyprojet.ecommerce.repositories.ProductRepository;
 import ci.digitalacademyprojet.ecommerce.repositories.UserRepository;
 import ci.digitalacademyprojet.ecommerce.services.CategoryService;
+import ci.digitalacademyprojet.ecommerce.services.DTO.ProdFileDTO;
 import ci.digitalacademyprojet.ecommerce.services.DTO.ProductDTO;
+import ci.digitalacademyprojet.ecommerce.services.FileStorageService;
 import ci.digitalacademyprojet.ecommerce.services.ProductService;
 import ci.digitalacademyprojet.ecommerce.services.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,6 +31,7 @@ public class ProductServiceImpl implements ProductService {
     private final UserRepository userRepository;
     private final ProductMapper productMapper;
     private final CategoryRepository categoryRepository;
+    private final FileStorageService fileStorageService ;
 
     @Override
     public List<ProductDTO> getAllProducts() {
@@ -63,6 +68,39 @@ public class ProductServiceImpl implements ProductService {
             return productMapper.toDto(productRepository.save(existingProduct));
         }).orElse(null); // Ou gérer avec une exception
     }
+
+    @Override
+    public ProductDTO uploadProductPicture(ProdFileDTO fileDTO) throws IOException {
+        if (fileDTO == null || fileDTO.getImage() == null || fileDTO.getImage().isEmpty()) {
+            throw new IllegalArgumentException("FileDTO or image file must not be null or empty.");
+        }
+
+
+        String uploadUrl = fileStorageService.upload(fileDTO.getImage());
+
+
+        ProductDTO product = new ProductDTO();
+        product.setId(fileDTO.getId());
+        product.setName(fileDTO.getName());
+        product.setDescription(fileDTO.getDescription());
+        product.setPrice(fileDTO.getPrice());
+        product.setStock(fileDTO.getStock());
+        product.setCategoryId(fileDTO.getCategoryId());
+        product.setVendorId(fileDTO.getVendorId());
+        product.setUrlPicture(uploadUrl);
+
+        ProductDTO savedProduct = addProduct(product);
+
+        return productMapper.toDto(productMapper.toEntity(savedProduct));
+    }
+
+
+    @Override
+    public Optional<ProductDTO> findOne(Long id) {
+        return productRepository.findById(id)
+                .map(productMapper::toDto);
+    }
+
 
     @Override
     public void deleteProduct(Long id) {

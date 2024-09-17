@@ -17,4 +17,5 @@ public class ProductDTO {
     private Integer stock; // Quantité disponible
     private Long categoryId; // Identifiant de la catégorie
     private Long vendorId; // Identifiant du vendeur
+    private String urlPicture;
 }

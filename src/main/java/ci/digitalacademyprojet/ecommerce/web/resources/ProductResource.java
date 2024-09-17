@@ -1,5 +1,6 @@
 package ci.digitalacademyprojet.ecommerce.web.resources;
 
+import ci.digitalacademyprojet.ecommerce.services.DTO.ProdFileDTO;
 import ci.digitalacademyprojet.ecommerce.services.DTO.ProductDTO;
 import ci.digitalacademyprojet.ecommerce.services.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class ProductResource {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO productDTO) {
+    public ResponseEntity<ProductDTO> addProduct(@ModelAttribute ProdFileDTO productDTO) {
         ProductDTO newProduct = productService.addProduct(productDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(newProduct);
     }
