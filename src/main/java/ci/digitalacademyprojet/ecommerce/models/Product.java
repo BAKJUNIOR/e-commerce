@@ -1,12 +1,15 @@
 package ci.digitalacademyprojet.ecommerce.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
+import java.math.BigDecimal;
 
 @Entity
 @Getter
@@ -18,23 +21,21 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+
+    @NotBlank(message = "Product name is mandatory")
     private String name;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Product description is mandatory")
     private String description;
 
-    @Column(nullable = false)
-    private Double price;
+    @NotNull(message = "Product price is mandatory")
+    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than zero")
+    private BigDecimal price;
 
-    @Column(nullable = false)
-    private Integer stock;
-
-    @ManyToOne
-    @JoinColumn(name = "vendor_id", nullable = false)
-    private User vendor; // Relation avec l'utilisateur (vendeur)
+    private String imageUrl;
 
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category; // Relation avec la catégorie
+    @JoinColumn(name = "vendor_id")
+    private Vendor vendor; // Un produit appartient à un vendeur
+
 }

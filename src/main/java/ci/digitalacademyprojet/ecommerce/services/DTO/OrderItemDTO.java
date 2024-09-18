@@ -5,14 +5,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderItemDTO {
-    private Long id; // Identifiant unique de l'article de commande
-    private Long orderId; // Identifiant de la commande
-    private Long productId; // Identifiant du produit
-    private Integer quantity; // Quantité du produit
-    private Double unitPrice; // Prix unitaire
+    private Long id;
+    private Long orderId; // Lien vers la commande
+    private Long productId; // Lien vers le produit
+    private int quantity;
+    private BigDecimal price;
+
 }

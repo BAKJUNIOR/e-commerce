@@ -1,32 +1,44 @@
 package ci.digitalacademyprojet.ecommerce.services.Impl;
-
-import ci.digitalacademyprojet.ecommerce.models.Category;
 import ci.digitalacademyprojet.ecommerce.models.Product;
-import ci.digitalacademyprojet.ecommerce.models.User;
-import ci.digitalacademyprojet.ecommerce.models.enums.Role;
-import ci.digitalacademyprojet.ecommerce.repositories.CategoryRepository;
+import ci.digitalacademyprojet.ecommerce.models.Vendor;
 import ci.digitalacademyprojet.ecommerce.repositories.ProductRepository;
-import ci.digitalacademyprojet.ecommerce.repositories.UserRepository;
-import ci.digitalacademyprojet.ecommerce.services.CategoryService;
+import ci.digitalacademyprojet.ecommerce.repositories.VendorRepository;
 import ci.digitalacademyprojet.ecommerce.services.DTO.ProductDTO;
 import ci.digitalacademyprojet.ecommerce.services.ProductService;
 import ci.digitalacademyprojet.ecommerce.services.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-
 @RequiredArgsConstructor
 @Service
 public class ProductServiceImpl implements ProductService {
+
     private final ProductRepository productRepository;
-    private final UserRepository userRepository;
+    private final VendorRepository vendorRepository;
+
     private final ProductMapper productMapper;
-    private final CategoryRepository categoryRepository;
+
+    @Override
+    public ProductDTO createProduct(ProductDTO productDTO) {
+        // Récupérer le vendeur à partir de l'ID
+        Vendor vendor = vendorRepository.findById(productDTO.getVendorId())
+                .orElseThrow(() -> new RuntimeException("Vendor not found"));
+
+        Product product = productMapper.toEntity(productDTO);
+        product.setVendor(vendor); // Associez le vendeur au produit
+
+        Product savedProduct = productRepository.save(product);
+        return productMapper.toDto(savedProduct);
+    }
+
+    @Override
+    public ProductDTO getProductById(Long id) {
+        Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+        return productMapper.toDto(product);
+    }
 
     @Override
     public List<ProductDTO> getAllProducts() {
@@ -36,36 +48,33 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO addProduct(ProductDTO productDTO) {
-        // Recherche d'un utilisateur avec le rôle "VENDOR"
-        User vendor = userRepository.findByRole(Role.VENDOR)
-                .orElseThrow(() -> new RuntimeException("Vendor not found"));
-
-        // Recherche de la catégorie par son ID
-        Category category = categoryRepository.findById(productDTO.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found"));
-
-        Product product = productMapper.toEntity(productDTO);
-        product.setVendor(vendor); // Associer le vendeur
-        product.setCategory(category); // Associer la catégorie
-        Product savedProduct = productRepository.save(product);
-        return productMapper.toDto(savedProduct);
-    }
-
-    @Override
-    public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
-        return productRepository.findById(id).map(existingProduct -> {
-            existingProduct.setName(productDTO.getName());
-            existingProduct.setDescription(productDTO.getDescription());
-            existingProduct.setPrice(productDTO.getPrice());
-            existingProduct.setStock(productDTO.getStock());
-            // Mettre à jour la catégorie et le vendeur si nécessaire
-            return productMapper.toDto(productRepository.save(existingProduct));
-        }).orElse(null); // Ou gérer avec une exception
-    }
-
-    @Override
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
+
+    @Override
+    @Transactional
+    public ProductDTO updateProduct(Long productId, ProductDTO productDTO) {
+        // Vérifiez si le produit existe
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        // Récupérer le vendeur à partir de l'ID
+        Vendor vendor = vendorRepository.findById(productDTO.getVendorId())
+                .orElseThrow(() -> new RuntimeException("Vendor not found"));
+
+        // Mettre à jour les champs du produit
+        product.setName(productDTO.getName());
+        product.setName(productDTO.getName());
+        product.setDescription(productDTO.getDescription());
+        product.setPrice(productDTO.getPrice());
+        product.setImageUrl(productDTO.getImageUrl());
+        product.setVendor(vendor); // Associer le vendeur
+
+        // Enregistrer le produit mis à jour
+        Product updatedProduct = productRepository.save(product);
+        return productMapper.toDto(updatedProduct);
+    }
+
+
 }

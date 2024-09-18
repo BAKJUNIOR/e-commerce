@@ -9,8 +9,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryDTO {
-    private Long id; // Identifiant unique de la catégorie
-    private String name; // Nom de la catégorie
-    private String description; // Description de la catégorie (optionnel)
+public class VendorDTO {
+    private Long id;
+    private String name;
+    private String description;
+    private Long userId; // Lien vers l'utilisateur
+
+
 }

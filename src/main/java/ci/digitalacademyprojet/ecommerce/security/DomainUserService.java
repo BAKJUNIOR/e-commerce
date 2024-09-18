@@ -25,7 +25,7 @@ public class DomainUserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User n'existe pas"));
 
         // Crée les GrantedAuthority à partir du rôle de l'utilisateur
-        List<GrantedAuthority> grantedAuthorities = List.of(new SimpleGrantedAuthority(user.getRole().name()));
+        List<GrantedAuthority> grantedAuthorities = List.of(new SimpleGrantedAuthority(user.getRole()));
 
         // Retourne l'objet UserDetails
         return new org.springframework.security.core.userdetails.User(

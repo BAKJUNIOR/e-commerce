@@ -1,12 +1,13 @@
 package ci.digitalacademyprojet.ecommerce.models;
 
-import ci.digitalacademyprojet.ecommerce.models.enums.Role;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 
 @Entity
 @Getter
@@ -18,16 +19,27 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @NotBlank(message = "Username is mandatory")
+    @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
+    @Column(unique = true)
     private String username;
 
-    @Column(nullable = false)
-    private String password;
-
-    @Column(nullable = false, unique = true)
+    @NotBlank(message = "Email is mandatory")
+    @Email(message = "Email should be valid")
+    @Column(unique = true)
     private String email;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role; // Rôle de l'utilisateur (CLIENT, VENDOR, ADMIN)
+    @NotBlank(message = "Role is mandatory")
+    private String role; // e.g., "buyer", "vendor"
+
+    @NotBlank(message = "Slug is mandatory")
+    @Size(min = 3, max = 50, message = "Slug must be between 3 and 50 characters")
+    @Column(unique = true)
+    private String slug;
+
+    @NotBlank(message = "Password is mandatory")
+    @Size(min = 8, message = "Password must be at least 8 characters long")
+    private String password;
+
+
 }

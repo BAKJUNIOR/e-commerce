@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -13,20 +14,23 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
-@Table(name = "`order`")
+@Table(name = "commande")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user; // Relation avec l'utilisateur (client)
+    @JoinColumn(name = "user_id")
+    private User user; // La commande appartient à un utilisateur
 
-    @Column(nullable = false)
-    private LocalDateTime orderDate;
+    private BigDecimal totalAmount;
+    private String status; // e.g., "pending", "shipped", "cancelled"
+    private LocalDateTime createdAt;
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now(); // Définit la date de création avant l'insertion
+    }
 
-    @Column(nullable = false)
-    private String status; // Statut de la commande (ex. : PANIER, EN_COURS, TERMINÉ)
+
 }

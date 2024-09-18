@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -12,10 +13,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PaymentDTO {
-    private Long id; // Identifiant unique du paiement
-    private Long orderId; // Identifiant de la commande
-    private Double amount; // Montant du paiement
-    private LocalDateTime paymentDate; // Date et heure du paiement
-    private String paymentMethod; // Méthode de paiement
-    private String status; // Statut du paiement
+    private Long id;
+    private Long orderId; // Pour associer le paiement à la commande
+    private BigDecimal amount;
+    private String paymentMethod;
+    private String status;
+    private String transactionId;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
 }

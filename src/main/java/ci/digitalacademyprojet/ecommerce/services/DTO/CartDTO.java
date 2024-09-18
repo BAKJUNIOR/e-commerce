@@ -9,12 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTO {
+public class CartDTO {
     private Long id;
-    private String username;
-    private String email;
-    private String role;
-    private String slug; // Nouveau champ
-    private String password; // Nouveau champ
+    private Long userId; // Pour associer le panier à l'utilisateur
 
 }

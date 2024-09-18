@@ -5,21 +5,26 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Category {
+public class Vendor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false, unique = true)
-    private String name;
 
-    @Column(length = 255)
+    private String name;
     private String description;
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    @Cascade(CascadeType.ALL)
+    private User user; // Un vendeur est un utilisateur
+
+
 }

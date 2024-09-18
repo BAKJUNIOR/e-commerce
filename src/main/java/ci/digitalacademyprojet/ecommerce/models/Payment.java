@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,19 +19,15 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "order_id", nullable = false)
-    private Order order; // Relation avec la commande
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order; // Le paiement est lié à une commande
 
-    @Column(nullable = false)
-    private Double amount; // Montant du paiement
+    private BigDecimal amount;
+    private String paymentMethod; // e.g., "credit card", "PayPal"
+    private String status; // e.g., "successful", "failed", "pending"
+    private String transactionId; // ID de transaction du service de paiement
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    @Column(nullable = false)
-    private LocalDateTime paymentDate; // Date et heure du paiement
-
-    @Column(nullable = false)
-    private String paymentMethod; // Méthode de paiement (ex. : Carte, PayPal)
-
-    @Column(nullable = false)
-    private String status; // Statut du paiement (ex. : Réussi, Échoué)
 }

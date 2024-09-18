@@ -15,11 +15,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrfConfigurer -> csrfConfigurer.disable())
+                .cors(corsConfigurer -> {})
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/**").permitAll() // Autorise uniquement les VENDORS
-                        .anyRequest().authenticated() // Les autres demandes nécessitent une authentification
+                        .requestMatchers("/api/**").permitAll() // Ou restreindre ici
+                        .anyRequest().authenticated()
                 );
-
         return http.build();
     }
 
