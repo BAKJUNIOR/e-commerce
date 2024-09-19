@@ -105,12 +105,10 @@ L'application fournit les points de terminaison suivants pour gérer les entité
 | Contributeur                                         | Rôle                     | Contributions principales                                  |
 |------------------------------------------------------|--------------------------|------------------------------------------------------------|
 | [BAKUS JUNIOR](https://github.com/bakjunior)         | Lead Backend             | Gestion de l'architecture backend, développement des API   |
-| [BEUGRE](https://github.com/Audre1)                  |  Gestionnaire Projet     |Mise en Place de la documentation et suivi du projet        |
-| [BANGAH](https://github.com/Bino26)                  | Backend Developer        | Developpement du Cloud                                     |
-| [WONOM](https://github.com/wononkaridja)             | Gestionnaire BD          | Mise en Place du Diagramme et de la BD                     |
-| [DIOMANDE](https://github.com/diomandesouleymane)    | Testeur                  |Tests API et fonctionnels                                   |
+| [BEUGRE](https://github.com/Audre1)                  |  Gestionnaire Projet     |Mise en Place de la documentation , suivi du projet et développement des API        |
+| [BANGAH](https://github.com/Bino26)                  | Backend Developer        | Developpement du Cloud    ,développement des API                                 |
+| [WONOM](https://github.com/wononkaridja)             | Gestionnaire BD          | Mise en Place du Diagramme et de la BD ,développement des API                    |
+| [DIOMANDE](https://github.com/diomandesouleymane)    | Testeur                  |Tests API et fonctionnels  ;développement des API                                 |
       
 
-## License
 
-This project is licensed under the MIT License. See the `LICENSE` file for details.
