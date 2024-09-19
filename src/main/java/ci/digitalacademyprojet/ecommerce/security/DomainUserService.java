@@ -1,5 +1,7 @@
 package ci.digitalacademyprojet.ecommerce.security;
 
+
+import ci.digitalacademyprojet.ecommerce.models.RoleUser;
 import ci.digitalacademyprojet.ecommerce.models.User;
 import ci.digitalacademyprojet.ecommerce.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,27 +13,33 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class DomainUserService implements UserDetailsService {
-    private final UserRepository userRepository;
-
+    public final UserRepository userRepository;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Recherche l'utilisateur par son username
-        User user = (User) userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User n'existe pas"));
 
-        // Crée les GrantedAuthority à partir du rôle de l'utilisateur
-        List<GrantedAuthority> grantedAuthorities = List.of(new SimpleGrantedAuthority(user.getRole()));
+        final Optional<User> user = userRepository.findByUsername(username);
+     if (user.isEmpty()){
+         throw new IllegalArgumentException("User n'existe pas");
+     }
 
-        // Retourne l'objet UserDetails
-        return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPassword(),
-                grantedAuthorities
-        );
+     final List<GrantedAuthority> grantedAuthorities = user.get()
+             .getRoleUser()
+             .stream()
+             .map(RoleUser:: getNameRole)
+             .map(SimpleGrantedAuthority::new)
+             .collect(Collectors.toList());
+     return user.map(userRecover -> org.springframework.security.core.userdetails.User.builder()
+
+             .username(userRecover.getUsername())
+             .password(userRecover.getPassword())
+             .authorities(grantedAuthorities)
+//             .roles()
+             .build()).orElseThrow(()-> new IllegalArgumentException("User n'existe pas"));
     }
 }

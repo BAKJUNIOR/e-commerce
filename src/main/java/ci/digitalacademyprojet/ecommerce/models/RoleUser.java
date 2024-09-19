@@ -1,26 +1,28 @@
 package ci.digitalacademyprojet.ecommerce.models;
 
+
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
-import java.io.Serializable;
-
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Table(name = "panier")
-public class Cart implements Serializable {
+@Entity
+@Table(name = "role_user")
+@ToString
+public class RoleUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id_role_user")
+    private Long idRoleUser;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(unique = true , name = "name_role")
+    private String nameRole;
+
+
 
 }
+

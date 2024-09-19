@@ -9,12 +9,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+import java.util.Set;
+
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,8 +32,8 @@ public class User {
     @Column(unique = true)
     private String email;
 
-    @NotBlank(message = "Role is mandatory")
-    private String role; // e.g., "buyer", "vendor"
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<RoleUser> roleUser;
 
     @NotBlank(message = "Slug is mandatory")
     @Size(min = 3, max = 50, message = "Slug must be between 3 and 50 characters")

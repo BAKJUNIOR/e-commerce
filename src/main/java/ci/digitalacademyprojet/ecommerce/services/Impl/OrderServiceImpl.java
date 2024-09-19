@@ -33,16 +33,17 @@ public class OrderServiceImpl implements OrderService {
         User user = userRepository.findById(orderDTO.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Créer la commande
+        LocalDateTime now = LocalDateTime.now();
         Order order = new Order();
         order.setUser(user);
-//        order.setCreatedAt(LocalDateTime.from(Instant.now()));
+        order.setCreatedAt(now);
         order.setTotalAmount(orderDTO.getTotalAmount());
         order.setStatus(orderDTO.getStatus());
 
         // Enregistrer la commande
         Order savedOrder = orderRepository.save(order);
-        return orderDTO;    }
+        return orderDTO;
+    }
 
 
 

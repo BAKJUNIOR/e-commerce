@@ -26,21 +26,17 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     public CartItemDTO createCartItem(CartItemDTO cartItemDTO) {
-        // Récupérer le panier à partir de l'ID
         Cart cart = cartRepository.findById(cartItemDTO.getCartId())
                 .orElseThrow(() -> new RuntimeException("Cart not found"));
 
-        // Récupérer le produit à partir de l'ID
         Product product = productRepository.findById(cartItemDTO.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        // Créer l'élément de panier
         CartItem cartItem = new CartItem();
         cartItem.setCart(cart);
         cartItem.setProduct(product);
         cartItem.setQuantity(cartItemDTO.getQuantity());
 
-        // Enregistrer l'élément de panier
         CartItem savedCartItem = cartItemRepository.save(cartItem);
         return new CartItemDTO(savedCartItem.getId(), cart.getId(), product.getId(), savedCartItem.getQuantity());
     }

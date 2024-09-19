@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Payment {
+public class Payment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,7 +27,7 @@ public class Payment {
     private BigDecimal amount;
     private String paymentMethod; // e.g., "credit card", "PayPal"
     private String status; // e.g., "successful", "failed", "pending"
-    private String transactionId; // ID de transaction du service de paiement
+    private String transactionId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

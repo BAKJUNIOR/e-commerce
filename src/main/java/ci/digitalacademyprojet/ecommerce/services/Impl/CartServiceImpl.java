@@ -23,15 +23,12 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartDTO createCart(CartDTO cartDTO) {
-        // Récupérer l'utilisateur à partir de l'ID
         User user = userRepository.findById(cartDTO.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Créer le panier
         Cart cart = new Cart();
         cart.setUser(user);
 
-        // Enregistrer le panier
         Cart savedCart = cartRepository.save(cart);
         return new CartDTO(savedCart.getId(), user.getId());
     }

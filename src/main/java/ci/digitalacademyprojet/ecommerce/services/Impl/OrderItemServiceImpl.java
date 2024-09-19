@@ -29,11 +29,9 @@ public class OrderItemServiceImpl implements OrderItemService {
 
     @Override
     public OrderItemDTO createOrderItem(OrderItemDTO orderItemDTO) {
-        // Récupérer l'ordre à partir de l'ID
         Order order = orderRepository.findById(orderItemDTO.getOrderId())
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        // Récupérer le produit à partir de l'ID
         Product product = productRepository.findById(orderItemDTO.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 

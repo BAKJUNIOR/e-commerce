@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
@@ -16,7 +17,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product {
+public class Product implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,6 +37,6 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "vendor_id")
-    private Vendor vendor; // Un produit appartient à un vendeur
+    private Vendor vendor;
 
 }

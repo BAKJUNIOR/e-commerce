@@ -1,28 +1,38 @@
 package ci.digitalacademyprojet.ecommerce.services.Impl;
 
+import ci.digitalacademyprojet.ecommerce.models.RoleUser;
 import ci.digitalacademyprojet.ecommerce.models.User;
+import ci.digitalacademyprojet.ecommerce.repositories.RoleUserRepository;
 import ci.digitalacademyprojet.ecommerce.repositories.UserRepository;
 import ci.digitalacademyprojet.ecommerce.repositories.VendorRepository;
+import ci.digitalacademyprojet.ecommerce.services.DTO.RoleUserDTO;
 import ci.digitalacademyprojet.ecommerce.services.DTO.UserDTO;
+import ci.digitalacademyprojet.ecommerce.services.RoleUserService;
 import ci.digitalacademyprojet.ecommerce.services.UserService;
+import ci.digitalacademyprojet.ecommerce.services.mapper.RoleUserMapper;
 import ci.digitalacademyprojet.ecommerce.services.mapper.UserMapper;
 import ci.digitalacademyprojet.ecommerce.utils.SlugifyUtils;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final RoleUserMapper roleUserMapper;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JavaMailSender mailSender;
     private final VendorRepository vendorRepository;
+    private final RoleUserService roleUserService;
 
 
     @Override
@@ -30,9 +40,19 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
-        user.setRole(userDTO.getRole());
-        user.setSlug(SlugifyUtils.generate(userDTO.getUsername())); // Générer le slug
-        user.setPassword(passwordEncoder.encode(userDTO.getPassword())); // Crypter le mot de passe
+        // Vérifiez que les rôles existent et associez-les
+        Set<RoleUser> roles = new HashSet<>();
+        if (userDTO.getRoleUser() != null) {
+            for (RoleUserDTO roleUserDTO : userDTO.getRoleUser()) {
+                RoleUserDTO roleDTO = roleUserService.findOne(roleUserDTO.getIdRoleUser())
+                        .orElseThrow(() -> new EntityNotFoundException("Rôle non trouvé : " + roleUserDTO.getIdRoleUser()));
+                RoleUser role = roleUserMapper.toEntity(roleDTO);
+                roles.add(role);
+            }
+        }
+        user.setRoleUser(roles);
+        user.setSlug(SlugifyUtils.generate(userDTO.getUsername()));
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
         User savedUser = userRepository.save(user);
 //        sendEmail(user.getEmail(), user.getPassword()); // Envoyer l'email
