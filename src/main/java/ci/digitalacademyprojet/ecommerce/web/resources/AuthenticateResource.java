@@ -48,7 +48,7 @@ public class AuthenticateResource {
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = createToken(authentication, login.isRumemberMe());
+        String jwt = createToken(authentication, login.isRememberMe());
         return new JWTTokenDTO(jwt);
     }
 

@@ -21,6 +21,7 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui/**").permitAll() // Permettre l'accès au point de terminaison swagger-ui et tout ce qui suit
                         .requestMatchers("/v3/api-docs/**").permitAll() // Permettre l'accès au point
                         .requestMatchers("/api/users/**").permitAll() // Ou restreindre ici
+                        .requestMatchers("/api/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session // Crée une session d'état pour les utilisateurs se connectant via le formulaire
