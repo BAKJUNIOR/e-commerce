@@ -6,6 +6,7 @@ import ci.digitalacademyprojet.ecommerce.repositories.VendorRepository;
 import ci.digitalacademyprojet.ecommerce.services.DTO.VendorDTO;
 import ci.digitalacademyprojet.ecommerce.services.VendorService;
 import ci.digitalacademyprojet.ecommerce.services.mapper.VendorMapper;
+import ci.digitalacademyprojet.ecommerce.utils.SlugifyUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ public class VendorServiceImpl implements VendorService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         vendor.setUser(user); // Associez l'utilisateur au vendeur
+        vendor.setSlug(SlugifyUtils.generate(vendorDTO.getName()));
         Vendor savedVendor = vendorRepository.save(vendor);
         return vendorMapper.toDto(savedVendor);
     }

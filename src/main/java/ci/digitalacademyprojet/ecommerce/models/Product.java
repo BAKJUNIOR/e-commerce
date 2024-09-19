@@ -35,6 +35,9 @@ public class Product implements Serializable {
 
     private String imageUrl;
 
+    @Column(unique = true)
+    private String slug;
+
     @ManyToOne
     @JoinColumn(name = "vendor_id")
     private Vendor vendor;

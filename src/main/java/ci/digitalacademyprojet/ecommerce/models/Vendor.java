@@ -23,6 +23,8 @@ public class Vendor implements Serializable {
     private String name;
     private String description;
 
+    @Column(unique = true)
+    private String slug;
     @OneToOne
     @JoinColumn(name = "user_id")
     @Cascade(CascadeType.ALL)

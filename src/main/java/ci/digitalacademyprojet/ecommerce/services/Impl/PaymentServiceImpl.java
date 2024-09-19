@@ -7,7 +7,9 @@ import ci.digitalacademyprojet.ecommerce.repositories.PaymentRepository;
 import ci.digitalacademyprojet.ecommerce.services.DTO.PaymentDTO;
 import ci.digitalacademyprojet.ecommerce.services.PaymentService;
 import ci.digitalacademyprojet.ecommerce.services.mapper.PaymentMapper;
+import ci.digitalacademyprojet.ecommerce.utils.SlugifyUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
@@ -26,6 +29,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public PaymentDTO createPayment(PaymentDTO paymentDTO) {
+        log.debug("Request to create payment:{}", paymentDTO);
         // Récupérer la commande à partir de l'ID
         Order order = orderRepository.findById(paymentDTO.getOrderId())
                 .orElseThrow(() -> new RuntimeException("Order not found"));
@@ -37,7 +41,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setPaymentMethod(paymentDTO.getPaymentMethod());
         payment.setStatus(paymentDTO.getStatus());
         payment.setTransactionId(paymentDTO.getTransactionId());
-
+        payment.setSlug(SlugifyUtils.generate(paymentDTO.getPaymentMethod()));
         // Initialiser les dates
         LocalDateTime now = LocalDateTime.now();
         payment.setCreatedAt(now); // Date de création
@@ -55,12 +59,14 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public PaymentDTO getPaymentById(Long id) {
+        log.debug("Request to get payment by id:{}", id);
         Payment payment = paymentRepository.findById(id).orElseThrow(() -> new RuntimeException("Payment not found"));
         return paymentMapper.toDto(payment);
     }
 
     @Override
     public List<PaymentDTO> getAllPayments() {
+        log.debug("Request to get all payments");
         return paymentRepository.findAll().stream()
                 .map(paymentMapper::toDto)
                 .collect(Collectors.toList());

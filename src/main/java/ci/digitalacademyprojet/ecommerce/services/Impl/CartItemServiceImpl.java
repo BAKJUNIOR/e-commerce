@@ -8,12 +8,16 @@ import ci.digitalacademyprojet.ecommerce.repositories.ProductRepository;
 import ci.digitalacademyprojet.ecommerce.services.CartItemService;
 import ci.digitalacademyprojet.ecommerce.services.DTO.CartItemDTO;
 import ci.digitalacademyprojet.ecommerce.services.mapper.CartItemMapper;
+import ci.digitalacademyprojet.ecommerce.utils.SlugifyUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class CartItemServiceImpl implements CartItemService {
@@ -26,6 +30,7 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     public CartItemDTO createCartItem(CartItemDTO cartItemDTO) {
+        log.debug("Request ta create CartItem: {}", cartItemDTO);
         Cart cart = cartRepository.findById(cartItemDTO.getCartId())
                 .orElseThrow(() -> new RuntimeException("Cart not found"));
 
@@ -36,6 +41,7 @@ public class CartItemServiceImpl implements CartItemService {
         cartItem.setCart(cart);
         cartItem.setProduct(product);
         cartItem.setQuantity(cartItemDTO.getQuantity());
+        cartItem.setSlug(SlugifyUtils.generate(String.valueOf(cartItemDTO.getQuantity())));
 
         CartItem savedCartItem = cartItemRepository.save(cartItem);
         return new CartItemDTO(savedCartItem.getId(), cart.getId(), product.getId(), savedCartItem.getQuantity());
@@ -43,12 +49,14 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     public CartItemDTO getCartItemById(Long id) {
+        log.debug("Request to get CartItemById: {}", id);
         CartItem cartItem = cartItemRepository.findById(id).orElseThrow(() -> new RuntimeException("Cart Item not found"));
         return cartItemMapper.toDto(cartItem);
     }
 
     @Override
     public List<CartItemDTO> getAllCartItems() {
+        log.debug("Request to getAllCartItems");
         return cartItemRepository.findAll().stream()
                 .map(cartItemMapper::toDto)
                 .collect(Collectors.toList());

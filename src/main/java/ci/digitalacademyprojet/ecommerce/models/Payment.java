@@ -28,6 +28,8 @@ public class Payment implements Serializable {
     private String paymentMethod; // e.g., "credit card", "PayPal"
     private String status; // e.g., "successful", "failed", "pending"
     private String transactionId;
+    @Column(unique = true)
+    private String slug;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

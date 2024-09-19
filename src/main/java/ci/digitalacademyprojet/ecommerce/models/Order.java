@@ -25,6 +25,8 @@ public class Order implements Serializable {
     @JoinColumn(name = "user_id")
     private User user; // La commande appartient à un utilisateur
 
+    @Column(unique = true)
+    private String slug;
     private BigDecimal totalAmount;
     private String status; // e.g., "pending", "shipped", "cancelled"
     private LocalDateTime createdAt;

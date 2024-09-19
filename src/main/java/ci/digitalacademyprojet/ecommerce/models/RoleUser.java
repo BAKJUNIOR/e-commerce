@@ -22,6 +22,8 @@ public class RoleUser {
     @Column(unique = true , name = "name_role")
     private String nameRole;
 
+    @Column(unique = true)
+    private String slug;
 
 
 }

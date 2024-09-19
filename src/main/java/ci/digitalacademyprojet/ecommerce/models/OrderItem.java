@@ -23,6 +23,8 @@ public class OrderItem implements Serializable {
     @JoinColumn(name = "order_id")
     private Order order; // Un élément appartient à une commande
 
+    @Column(unique = true)
+    private String slug;
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product; // Un élément est un produit

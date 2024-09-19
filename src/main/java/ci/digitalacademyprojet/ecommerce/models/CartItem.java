@@ -21,7 +21,8 @@ public class CartItem implements Serializable {
     @ManyToOne
     @JoinColumn(name = "cart_id")
     private Cart cart; // Un élément appartient à un panier
-
+    @Column(unique = true)
+    private String slug;
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product; // Un élément est un produit
