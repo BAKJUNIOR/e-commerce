@@ -35,6 +35,7 @@ public class UserServiceImpl implements UserService {
     private final JavaMailSender mailSender;
     private final VendorRepository vendorRepository;
     private final RoleUserService roleUserService;
+    private  final  EmailService emailService;
 
 
     @Override
@@ -55,19 +56,12 @@ public class UserServiceImpl implements UserService {
         }
         user.setRoleUser(roles);
         user.setSlug(SlugifyUtils.generate(userDTO.getUsername()));
+        emailService.sendPasswordEmail(user.getEmail(),user.getPassword());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
         User savedUser = userRepository.save(user);
-//        sendEmail(user.getEmail(), user.getPassword()); // Envoyer l'email
-        return userMapper.toDto(savedUser);
-    }
 
-    private void sendEmail(String email, String password) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email);
-        message.setSubject("Votre inscription");
-        message.setText("Bienvenue ! Voici votre mot de passe : " + password);
-        mailSender.send(message);
+        return userMapper.toDto(savedUser);
     }
 
 

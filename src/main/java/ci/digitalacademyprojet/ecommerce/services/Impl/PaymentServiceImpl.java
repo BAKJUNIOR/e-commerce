@@ -24,7 +24,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
-
+private  final  EmailService emailService;
     private final PaymentMapper paymentMapper;
 
     @Override
@@ -49,6 +49,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         // Enregistrer le paiement
         Payment savedPayment = paymentRepository.save(payment);
+        sendPaymentConfirmationEmail(order);
 
         paymentDTO.setId(savedPayment.getId());
         paymentDTO.setCreatedAt(savedPayment.getCreatedAt());
@@ -56,6 +57,16 @@ public class PaymentServiceImpl implements PaymentService {
 
         return paymentDTO;
     }
+
+    private void sendPaymentConfirmationEmail(Order order) {
+        String email = order.getUser().getEmail();
+        String orderDetails = "Détails de votre commande :\n"
+                + "Commande ID: " + order.getId() + "\n"
+                + "Montant: " + order.getTotalAmount() + "\n"
+                + "Statut: " + order.getStatus() + "\n";
+
+        emailService.sendOrderConfirmationEmail(email, orderDetails);
+}
 
     @Override
     public PaymentDTO getPaymentById(Long id) {
