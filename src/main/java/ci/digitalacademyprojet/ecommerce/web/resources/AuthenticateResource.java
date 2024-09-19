@@ -1,10 +1,10 @@
 package ci.digitalacademyprojet.ecommerce.web.resources;
 
-
 import ci.digitalacademyprojet.ecommerce.services.DTO.JWTTokenDTO;
 import ci.digitalacademyprojet.ecommerce.services.DTO.LoginDTO;
 import ci.digitalacademyprojet.ecommerce.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -24,6 +24,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -41,6 +42,8 @@ public class AuthenticateResource {
 
     @PostMapping("/authenticate")
     public JWTTokenDTO authorize(@RequestBody LoginDTO login) {
+        log.debug("REST request to authenticate user {}", login.getUsername());
+
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 login.getUsername(),
                 login.getPassword()
@@ -49,11 +52,15 @@ public class AuthenticateResource {
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = createToken(authentication, login.isRememberMe());
+
+        log.debug("User {} authenticated successfully, token created", login.getUsername());
         return new JWTTokenDTO(jwt);
     }
 
     public String createToken(Authentication authentication, boolean rememberMe) {
-        String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
 
         Instant now = Instant.now();
         Instant validity;
@@ -72,6 +79,9 @@ public class AuthenticateResource {
                 .build();
 
         JwsHeader jwsHeader = JwsHeader.with(SecurityUtils.JWT_ALGORITHM).build();
-        return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
+        String token = this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
+
+        log.debug("Token created for user {} with validity {}", authentication.getName(), validity);
+        return token;
     }
-    }
+}
