@@ -6,5 +6,4 @@ public class AuthorityConstants {
     public static String ROLE_VENDOR = "VENDOR";
 
 
-
 }
