@@ -35,7 +35,7 @@ L'application fournit les points de terminaison suivants pour gérer les entité
 
 ## Diagramme de Classe
 
-<img width="535" alt="Diagramme_de_classe" src="https://github.com/user-attachments/assets/c615b128-f891-4822-aab0-0b41b5c5697b">
+<img width="469" alt="Diagramme_de_classe" src="https://github.com/user-attachments/assets/14bf2a02-976a-43d4-8a2e-07862db36e13">
 
 ## API Endpoints
 
