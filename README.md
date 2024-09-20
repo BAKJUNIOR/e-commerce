@@ -31,7 +31,7 @@ Remplacez `your_db_link`, `your_username` et `your_password` par les détails de
 
 ## Caractéristique
 
-L'application fournit les points de terminaison suivants pour gérer les entités « User »  « Produit »  « Payment »  « Order»  « Order_Item»  « category».
+L'application fournit les points de terminaison suivants pour gérer les entités « User »  « Produit »  « Payment »  « Order»  « Order_Item» .
 
 ## Diagramme de Classe
 
